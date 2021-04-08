@@ -4,6 +4,14 @@
 <br />
 
 ## 🎥 App View
+### 📺 Stack Navigation
+<p align='center'>
+    <img src='https://user-images.githubusercontent.com/64779472/114034632-50637880-98b9-11eb-98d8-a2111e389a09.PNG' width="400" height="730">
+</p>
+
+<br />
+
+### 📺 Tab Navigation
 <p align='center'>
     <img src='https://user-images.githubusercontent.com/64779472/114034024-c87d6e80-98b8-11eb-907a-86fe74ce34c2.PNG' width="400" height="730">
 </p>
