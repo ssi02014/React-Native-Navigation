@@ -49,6 +49,7 @@
 
 
 ## 👨🏻‍💻 스택 내비게이션
+### 🏃 화면 구성
 - 스택 내비게이션은 가장 기본적인 내비게이션으로, 현재 화면 위에 다른 화면을 쌓으면서 화면을 이동하는 것이 특징이다.
 - 스택 내비게이션은 화면 위에 새로운 화면을 쌓으면서(push) 이동하기 때문에 이전 화면을 계속 유지해야한다. 이런 구조 때문에 가장 위에 있는 화면을 들어내면(pop) 이전 화면으로 돌아갈 수 있다는 특징이 있다.
 
@@ -58,10 +59,18 @@
     //install
     yarn add @react-navigation/stack
 
-    //1. 스택 내비게이션 생성
+    //import 
+    import {createStackNavigator} from '@react-navigation/stack';
+
+    //component import
+    import Home from '../screens/Home';
+    import Item from '../screens/Item';
+    import List from '../screens/List';
+
+    // 스택 내비게이션 생성
     const Stack = createStackNavigator();
 
-    //2. 화면을 구성하는 Screen, Screen을 관리하는 Navigator 컴포넌트
+    // 화면을 구성하는 Screen, Screen을 관리하는 Navigator 컴포넌트
     return (
         <Stack.Navigator>
             <Stack.Screen name="Home" component={Home} />
@@ -71,8 +80,10 @@
     );
 ```
 
+<br />
+
 - 스택 내비게이션에서 첫 번째 화면으로 나오는 화면은 Navigator 컴포넌트의 첫 번째 자식 Screen 컴포넌트입니다. 만약 순서를 변경한다면 첫 화면으로 나타나는 화면이 달라집니다.
-- 컴포넌트 순서를 변경하는 방법 외에도 initalRouteName 속성을 이용해 첫 번째 화면을 지정하는 방법이 있습니다.
+- 컴포넌트 순서를 변경하는 방법 외에도 **initalRouteName** 속성을 이용해 첫 번째 화면을 지정하는 방법이 있습니다.
 
 ```javascript
     return (
@@ -86,6 +97,49 @@
 
 <br />
 
+### 🏃 화면 이동
+- Screen 컴포넌트의 component로 지정된 컴포넌트는 화면으로 이용되고 navigation이 props로 전달됩니다.
+- navigation에는 다양한 기능이 존재하는데 그중 navigate 함수는 원하는 화면으로 이동하는 데 사용되는 함수입니다.
+
+![4](https://user-images.githubusercontent.com/64779472/113983155-93572900-9884-11eb-9573-1072ad1aa087.PNG)
+
+```javascript
+    const Home = ({ navigation }) => {
+    return(
+        <Container>
+            <StyledText>Home</StyledText>
+            <Button
+                title="go to the list screen"
+                //navigate 함수를 이용해서 원하는 화면의 이름을 전달하면 해당 화면으로 이동 됩니다.
+                onPress={() => navigation.navigate('List')}
+            />
+        </Container>
+    )
+};
+```
+
+<br />
+
+- 만약 이동하는 화면이 이전 화면의 상세 화면이라면, 상세 화면은 어떤 내용을 렌더링해야하는지 전달 받아야 합니다. navigate 함수를 이용할 때 **두 번째 파라미터**에 객체를 전달해서 이동하는 화면에 필요한 정보를 함께 전달하는 기능이 있습니다.
+- 전달 된 내용은 컴포넌트의 props로 전달되는 route의 params를 통해 확인할 수 있습니다.
+
+```javascript
+    //데이터 전달
+    const _onPress = item => {
+        navigation.navigate('Item', {id: item._id, name: item.name});
+    };
+
+    //데이터 확인
+    const Item = ({ route }) => {
+        return (
+            <Container>
+                <StyledText>Item</StyledText>
+                <StyledText>ID: {route.params.id}</StyledText>
+                <StyledText>Item: {route.params.name}</StyledText>
+            </Container>
+        )
+    };
+```
 
 ### 🏃 
 ```javascript
