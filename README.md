@@ -159,6 +159,9 @@
 ### 🏃 헤더 수정하기
 - 스택 내비게이션의 헤더는 뒤로 가기 버튼을 제공하거나 타이틀을 통해 현재 화면을 알려주는 역할을 합니다.
 - 헤더 타이틀은 Screen 컴포넌트의 name 속성을 기본값을 사용합니다.
+
+<br />
+
 - Screen 컴포넌트의 name 속성을 바꾼다면 navigate 함수에 전달하는 첫 번째 파라미터 값도 변경되어야 합니다.
 - name 속성을 변경하는 것은 간편하지만, name 속성을 이용하는 곳을 찾아다니며 모두 수정해야 한다는 단점이 있습니다. 이 단점을 피하는 방법으로 headerTitle 속성을 이용하는 것입니다.
 
@@ -270,6 +273,9 @@
 <br />
 
 - useLayoutEffect Hook은 useEffect와 거의 동일하며 거의 같은 방식으로 동작합니다. 주요 차이점은 컴포넌트가 업데이트된 직후 화면이 렌더링 되기 전에 실행됩니다. 이 특징 때문에 화면을 렌더링하기 전에 변경할 부분이 있거나 수치 등을 측정해야 하는 상황에서 많이 사용됩니다.
+
+<br />
+
 - headerLeft와 headerRight에 컴포넌트를 반환하는 함수를 지정하면 헤더의 왼쪽, 오른쪽에 원하는 컴포넌트를 렌더링할 수 있습니다.
 - headerLeft 파라미터에는 다양한 값들이 전달되는데, 그중 onPress는 뒤로 가기 버튼 기능이 전달됩니다.
 - headerRight 파라미터에는 tintColor만 전달되므로, onPress에 원하는 행동을 정의해줘야 합니다. navigation에서 제공하는 다양한 함수 중 popToTop 함수는 현재 쌓여 있는 모든 화면을 내보내고 첫 화면으로 돌아가는 기능입니다.
@@ -348,3 +354,213 @@
 ```
 
 <br />
+
+## 👨🏻‍💻 탭 내비게이션
+- 탭 내비게이션은 보통 화면 위나 아래에 위치하며, 탭 버튼을 누르면 버튼과 연결된 화면으로 이동하는 방식으로 동작합니다. ex) 카카오톡, 유튜브
+
+![7](https://user-images.githubusercontent.com/64779472/114026037-be577200-98b0-11eb-9263-90dbaa15a0b2.PNG)
+
+```javascript
+    //install
+    yarn add @react-navigation/bottom-tabs
+```
+<br />
+
+### 🏃 화면구성
+- createBottomTabNavigator함수를 이용해 탭 내비게이션을 생성
+- 탭 내비게이션에도 스택 내비게이션과 동일하게 Navigator 컴포넌트, Screen 컴포넌트가 있다. 역할은 동일하다.
+- initalRouteName 속성을 이용해 탭 버튼의 순서는 변경하지 않고 렌더링 되는 첫 번째 화면을 변경할 수 있다.
+
+```javascript
+    import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+    const Tab = createBottomTabNavigator();
+
+    const TabNavigation = () => {
+        return (
+            <Tab.Navigator initialRouteName="Settings">
+                <Tab.Screen name="Mail" component={Mail} />
+                <Tab.Screen name="Meet" component={Meet} />
+                <Tab.Screen name="Settings" component={Settings} />
+            </Tab.Navigator>
+        )
+    };
+```
+
+<br />
+
+### 🏃 버튼 아이콘 설정
+- 탭 버튼에 아이콘을 렌더링하는 방법은 **tabBarIcon**을 이용하는 것이다. 스택 내비게이션처럼 컴포넌트를 반환하는 함수를 지정하면 버튼의 아이콘이 들어갈 자리에 해당 컴포넌트를 렌더링한다.
+    1. color
+    2. size
+    3. focused
+
+```javascript
+    import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+    const TabIcon = ({ name, size, color}) => {
+        return (
+            <MaterialCommunityIcons 
+                name={name} 
+                size={size} 
+                color={color} 
+            /> 
+        );
+    }
+
+    <Tab.Navigator initialRouteName="Settings">
+            <Tab.Screen 
+                name="Mail" 
+                component={Mail}
+                options={{
+                    tabBarIcon: props => TabIcon({ ...props, name: 'email'})
+                }}
+            />
+            (...)
+    </Tab.Navigator>
+
+```
+<br />
+
+- 만약 Screen 컴포넌트마다탭 버튼 아이콘을 지정하지 않고 한곳에서 모든 버튼의 아이콘을 관리하고 싶은 경우 Navigator 컴포넌트의 screenOptions 속성을 사용해서 관리할 수 있다.
+
+```javascript
+    <Tab.Navigator 
+        initialRouteName="Settings"
+        screenOptions={({ route }) ({
+            tabBarIcon: props => {
+                let name = '';
+                if (route.name === 'Mail') name = 'email';
+                else if (route.name === 'Meer') name = 'video';
+                else name = 'account-settings';
+                return TabIcon({ ...props, name });
+            }
+        })}
+    >
+        <Tab.Screen name="Mail" component={Mail}/>
+    </Tab.Navigator>
+```
+
+### 🏃 라벨 수정하기
+- 버튼 아이콘 아래에 렌더링되는 라벨(Label)은 Screen 컴포넌트의 name 값을 기본값으로 사용합니다. 탭 버튼의 라벨은 **tabBarLabel**을 이용해서 변경할 수 있습니다.
+
+```javascript
+    <Tab.Navigator initialRouteName="Settings">
+        <Tab.Screen 
+            name="Mail" 
+            component={Mail}
+            options={{
+                tabBarLabel: 'index',
+                tabBarIcon: props => TabIcon({ ...props, name: 'email'})
+            }}
+        />
+        (...)
+    </Tab.Navigator>
+```
+<br />
+
+- 라벨을 버튼 아이콘의 아래가 아닌 아이콘 옆에 렌더링되도록 변경하고 싶으면 **tabBarOptions** 속성에 **labelPosition**의 값을 변경해서 조정할 수 있습니다.
+    1. below-icon: 아이콘 아래에 라벨이 렌더링된다.
+    2. beside-icon: 아이콘 오른쪽에 라벨이 렌더링된다.
+
+![8](https://user-images.githubusercontent.com/64779472/114031078-f9a86f80-98b5-11eb-987c-e8b68d9426f3.PNG)
+
+```javascript
+    <Tab.Navigator 
+        initialRouteName="Settings"
+        tabBarOptions={{
+            labelPosition: 'beside-icon',
+        }}
+    >
+    (...)
+    </Tab.Navigator>
+```
+
+<br />
+
+- 라벨을 렌더링하지 않고 아이콘만 사용하는 경우에는 **tabBarOptions** 속성에 **showLabel**을 이용하면 탭 바에서 라벨이 렌더링되지 않도록 설정할 수 있습니다.
+
+![9](https://user-images.githubusercontent.com/64779472/114031080-fa410600-98b5-11eb-817e-83502b43291c.PNG)
+
+```javascript
+    <Tab.Navigator 
+        initialRouteName="Settings"
+        tabBarOptions={{
+            labelPosition: 'beside-icon',
+            showLabel: false,
+        }}
+    >
+    (...)
+    </Tab.Navigator>
+```
+
+<br />
+
+### 🏃 스타일 수정하기
+- 탭 바의 스타일을 수정하려면 **tabBarOptions** 속성에 style의 값으로 스타일 객체를 설정하여 변경할 수 있습니다.
+
+![11](https://user-images.githubusercontent.com/64779472/114032446-450f4d80-98b7-11eb-81a7-2863dd72cb6d.PNG)
+
+```javascript
+    <Tab.Navigator 
+        initialRouteName="Settings"
+        tabBarOptions={{
+            labelPosition: 'beside-icon',
+            showLabel: false,
+            style: {
+                backgroundColor: '#54b7f9',
+                borderTopColor: '#fff',
+                borderTopWidth: 2,
+            }
+        }}
+    >
+    </Tab.Navigator>
+```
+
+<br />
+
+- 탭 버튼의 아이콘은 활성화 된 상태의 색은 **activeTintColor**, 비활성화된 상태의 색은 **inactiveTintColor**을 이용해 설정할 수 있습니다.
+
+![10](https://user-images.githubusercontent.com/64779472/114032320-2ad56f80-98b7-11eb-8240-17bca13dceba.PNG)
+
+```javascript
+    <Tab.Navigator 
+        initialRouteName="Settings"
+        tabBarOptions={{
+            labelPosition: 'beside-icon',
+            showLabel: false,
+            style: {
+                backgroundColor: '#54b7f9',
+                borderTopColor: '#fff',
+                borderTopWidth: 2,
+            },
+            activeTintColor: '#fff',
+            inactiveTintColor: '#0B92E9',
+        }}
+    >
+    </Tab.Navigator>
+```
+
+<br />
+
+- 버튼의 아이콘을 설정하기 위해 barTabIcon에 설정한 함수에는 파라미터로 size, color, focused를 가진 객체가 전달되는데. 이 값 중 focused는 버튼의 선택도니 상태를 나타내는 값이다. 이 값을 이용하면 버튼의 활성화 상태에 따라 다른 버튼을 렌더링하거나 스타일을 변경할 수 있다.
+
+![12](https://user-images.githubusercontent.com/64779472/114033530-52790780-98b8-11eb-811c-de711381ca3c.PNG)
+
+```javascript
+    <Tab.Navigator 
+        //(...)
+    >
+        <Tab.Screen 
+            name="Mail" 
+            component={Mail}
+            options={{
+                tabBarLabel: 'index',
+                tabBarIcon: props => TabIcon({ 
+                    ...props, 
+                    name: props.focused ? 'email' : 'email-outline'
+                }),
+            }}
+        />
+        (...)
+    </Tab.Navigator>
+```
