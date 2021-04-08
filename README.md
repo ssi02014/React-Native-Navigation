@@ -3,7 +3,10 @@
 
 <br />
 
-## 🎥
+## 🎥 App View
+<p align='center'>
+    <img src='https://user-images.githubusercontent.com/64779472/114034024-c87d6e80-98b8-11eb-907a-86fe74ce34c2.PNG' width="400" height="730">
+</p>
 
 <br />
 
