@@ -141,9 +141,90 @@
     };
 ```
 
-### 🏃 
+### 🏃 화면 배경색 수정하기
+- 리액트 내비게이션의 cardStyle을 이용하면 스택 내비게이션의 화면 배경색을 수정할 수 있습니다. 
+- 화면의 배경색은 일반적으로 동일하게 사용하므로, 화면마다 설정하기보다 Navigator 컴포넌트의 screenOptions에 설정해서 화면 전체에 적용되도록 하는 것이 편합니다.
+
 ```javascript
-    
+    <Stack.Navigator 
+            initialRouteName="Home"
+            screenOptions={{ cardStyle: { backgroundColor: '#ffffff' }}}
+        >
+        (...)
+    </Stack.Navigator>
 ```
 
+<br />
+
+### 🏃 헤더 수정하기
+- 스택 내비게이션의 헤더는 뒤로 가기 버튼을 제공하거나 타이틀을 통해 현재 화면을 알려주는 역할을 합니다.
+- 헤더 타이틀은 Screen 컴포넌트의 name 속성을 기본값을 사용합니다.
+- Screen 컴포넌트의 name 속성을 바꾼다면 navigate 함수에 전달하는 첫 번째 파라미터 값도 변경되어야 합니다.
+- name 속성을 변경하는 것은 간편하지만, name 속성을 이용하는 곳을 찾아다니며 모두 수정해야 한다는 단점이 있습니다. 이 단점을 피하는 방법으로 headerTitle 속성을 이용하는 것입니다.
+
+```javascript
+    <Stack.Navigator>
+        (...)
+        <Stack.Screen 
+            name="List" 
+            component={List}
+            options={{ headerTitle:'List Screen'}}
+        />
+    </Stack.Navigator>
+```
+
+<br />
+
+### 🏃 스타일 수정하기
+- headerStyle: 헤더의 배경색 등을 수정하는 속성
+- headerTitleStyle: 헤더의 타이틀 컴포넌트의 스타일을 수정하는 속성
+- headerTitleAlign: 타이틀 정렬 하는 속성 center와 left만 가능
+- headerTitle: headerTitle 속성에 컴포넌트를 반환하는 함수를 지정하면 타이틀 컴포넌트를 반환하는 컴포넌트로 변경할 수 있다. 
+- headerTitle에 함수가 설정되면 해당 함수의 파라미터로 style과 tintColor 등이 포함된 객체가 전달된다. 그중, style은 headerTitleStyle에 설정된 값이고, tintColor는 headerTintColor에 지정된 값이 전달 된다.
+
+```javascript
+    <Stack.Navigator 
+        initialRouteName="Home"
+        screenOptions={{ 
+            cardStyle: { backgroundColor: '#ffffff' },
+            headerStyle: {
+                height: 110,
+                backgroundColor: '#95a5a6',
+                borderBottomWidth: 5,
+                borderBottomColor: '#34495e',
+            },
+            headerTitleStyle: { color: '#ffffff', fontSize: 24},
+            headerTitleAlign: 'center',
+            headerTitle: ({ style }) => (
+                <MaterialCommunityIcons name="react" style={style} />
+            )
+        }}
+    >
+        (...)
+    </Stack.Navigator>
+```
+
+<br />
+
+### 🏃 버튼 수정하기
+- headerBackTitleVisible: iOS, Android 두 플랫폼의 버튼 타이틀 렌더링 여부를 동일하게 설정할 수 있는 속성. true로 하면 뒤로가기 버튼 + 타이틀이 보인다.
+- headerBackTitle: 이전 화면의 이름이 아닌 다른 값을 이용하고 싶은 경우 headerBackTitle 속성을 이용한다.
+- headerTintStyle: 버튼의 타이틀과 이미지의 색을 동일하게 변경할 때 사용하는 속성
+- headerBackTitleStyle: 글자의 색뿐만 아니라 글자 크기 등 다양한 스타일을 지정할 수 있지만 버튼의 타이틀에만 적용된다. 
+
+![5](https://user-images.githubusercontent.com/64779472/113991099-17adaa00-988d-11eb-8dca-37fa441f236b.PNG)
+
+```javascript
+    <Stack.Screen 
+        name="List" 
+        component={List}
+        options={{ 
+            headerTitle:'List Screen',
+            headerBackTitleVisible: true,
+            headerBackTitle: 'Prev',
+            headerTitleStyle: { fontSize: 24},
+            headerTintColor: '#e74c3c',
+        }}
+    />
+```
 <br />
