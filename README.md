@@ -57,6 +57,31 @@
 ```javascript
     //install
     yarn add @react-navigation/stack
+
+    //1. 스택 내비게이션 생성
+    const Stack = createStackNavigator();
+
+    //2. 화면을 구성하는 Screen, Screen을 관리하는 Navigator 컴포넌트
+    return (
+        <Stack.Navigator>
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="List" component={List} />
+            <Stack.Screen name="Item" component={Item} />
+        </Stack.Navigator>
+    );
+```
+
+- 스택 내비게이션에서 첫 번째 화면으로 나오는 화면은 Navigator 컴포넌트의 첫 번째 자식 Screen 컴포넌트입니다. 만약 순서를 변경한다면 첫 화면으로 나타나는 화면이 달라집니다.
+- 컴포넌트 순서를 변경하는 방법 외에도 initalRouteName 속성을 이용해 첫 번째 화면을 지정하는 방법이 있습니다.
+
+```javascript
+    return (
+        <Stack.Navigator initialRouteName="List">
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="List" component={List} />
+            <Stack.Screen name="Item" component={Item} />
+        </Stack.Navigator>
+    );
 ```
 
 <br />
