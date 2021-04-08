@@ -1,6 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
+import { Platform } from 'react-native'; 
 
 import Home from '../screens/Home';
 import Item from '../screens/Item';
@@ -38,6 +39,21 @@ const StackNavigation = () => {
                     headerBackTitle: 'Prev',
                     headerTitleStyle: { fontSize: 24},
                     headerTintColor: '#e74c3c',
+                    headerBackImage: ({ tintColor }) => {
+                        const style = {
+                            marginRight: 5,
+                            marginLeft: Platform.OS === 'ios' ? 11: 0,
+                        };
+
+                        return (
+                            <MaterialCommunityIcons 
+                                name='keyboard-backspace'
+                                size={30}
+                                color={tintColor}
+                                style={style}
+                            />
+                        );
+                    }
                 }}
             />
             <Stack.Screen name="Item" component={Item} />

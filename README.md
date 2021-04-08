@@ -175,12 +175,14 @@
 
 <br />
 
-### 🏃 스타일 수정하기
+### 🏃 타이틀 스타일 수정하기
 - headerStyle: 헤더의 배경색 등을 수정하는 속성
 - headerTitleStyle: 헤더의 타이틀 컴포넌트의 스타일을 수정하는 속성
 - headerTitleAlign: 타이틀 정렬 하는 속성 center와 left만 가능
 - headerTitle: headerTitle 속성에 컴포넌트를 반환하는 함수를 지정하면 타이틀 컴포넌트를 반환하는 컴포넌트로 변경할 수 있다. 
-- headerTitle에 함수가 설정되면 해당 함수의 파라미터로 style과 tintColor 등이 포함된 객체가 전달된다. 그중, style은 headerTitleStyle에 설정된 값이고, tintColor는 headerTintColor에 지정된 값이 전달 된다.
+- headerTitle에 함수가 설정되면 해당 함수의 파라미터로 style과 tintColor 등이 포함된 객체가 전달된다. 
+    1. style은 headerTitleStyle에 설정된 값이다.
+    2. tintColor는 headerTintColor에 지정된 값이 전달 된다.
 
 ```javascript
     <Stack.Navigator 
@@ -206,7 +208,7 @@
 
 <br />
 
-### 🏃 버튼 수정하기
+### 🏃 타이틀 버튼 스타일 수정하기
 - headerBackTitleVisible: iOS, Android 두 플랫폼의 버튼 타이틀 렌더링 여부를 동일하게 설정할 수 있는 속성. true로 하면 뒤로가기 버튼 + 타이틀이 보인다.
 - headerBackTitle: 이전 화면의 이름이 아닌 다른 값을 이용하고 싶은 경우 headerBackTitle 속성을 이용한다.
 - headerTintStyle: 버튼의 타이틀과 이미지의 색을 동일하게 변경할 때 사용하는 속성
@@ -227,4 +229,92 @@
         }}
     />
 ```
+<br />
+
+### 🏃 타이틀 버튼 컴포넌트 변경
+- iOS, Android의 뒤로 가기 버튼 아이콘에 동일한 아이콘이 렌더링되도록 변경하려면 headerBackImage에 컴포넌트를 반환하는 함수를 전달해서 두 플랫폼이 동일한 이미지를 렌더링하도록 변경해야 된다.
+    1. style은 headerTitleStyle에 설정된 값이다.
+    2. tintColor는 headerTintColor에 지정된 값이 전달 된다.
+
+```javascript
+    <Stack.Screen 
+        name="List" 
+        component={List}
+        options={{ 
+            headerTitle:'List Screen',
+            headerBackTitleVisible: true,
+            headerBackTitle: 'Prev',
+            headerTitleStyle: { fontSize: 24},
+            headerTintColor: '#e74c3c',
+            headerBackImage: ({ tintColor }) => {
+            //두 플랫폼의 버튼 위치를 동일하게 하기 위해
+            //플랫폼에 따라 스타일을 다르게 적용
+                const style = {
+                    marginRight: 5,
+                    marginLeft: Platform.OS === 'ios' ? 11 : 0,
+                };
+
+                return (
+                    <MaterialCommunityIcons 
+                        name='keyboard-backspace'
+                        size={30}
+                        color={tintColor}
+                        style={style}
+                    />
+                );
+            }
+        }}
+    />
+```
+
+<br />
+
+- useLayoutEffect Hook은 useEffect와 거의 동일하며 거의 같은 방식으로 동작합니다. 주요 차이점은 컴포넌트가 업데이트된 직후 화면이 렌더링 되기 전에 실행됩니다. 이 특징 때문에 화면을 렌더링하기 전에 변경할 부분이 있거나 수치 등을 측정해야 하는 상황에서 많이 사용됩니다.
+- headerLeft와 headerRight에 컴포넌트를 반환하는 함수를 지정하면 헤더의 왼쪽, 오른쪽에 원하는 컴포넌트를 렌더링할 수 있습니다.
+- headerLeft 파라미터에는 다양한 값들이 전달되는데, 그중 onPress는 뒤로 가기 버튼 기능이 전달됩니다.
+- headerRight 파라미터에는 tintColor만 전달되므로, onPress에 원하는 행동을 정의해줘야 합니다. navigation에서 제공하는 다양한 함수 중 popToTop 함수는 현재 쌓여 있는 모든 화면을 내보내고 첫 화면으로 돌아가는 기능입니다.
+
+
+```javascript
+    import React, { useLayoutEffect } from 'react';
+
+    const Item = ({ navigation, route }) => {
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerBackTitleVisible: false,
+            headerTintColor: '#ffffff',
+            headerLeft: ({ onPress, tintColor }) => {
+                return (
+                    <MaterialCommunityIcons 
+                        name="keyboard-backspace"
+                        size={30}
+                        style={{ marginLeft: 11 }}
+                        color={tintColor}
+                        onPress={onPress}
+                    />
+                )
+            },
+            headerRight: ({ tintColor }) => {
+                return (
+                    <MaterialCommunityIcons 
+                        name="home-variant"
+                        size={30}
+                        style={{ marginRight: 11 }}
+                        color={tintColor}
+                        onPress={() => navigation.popToTop()}
+                    />
+                )
+            },
+        });
+    }, []);
+```
+<br />
+
+### 🏃 헤더 감추기
+- headerMods는 Navigation컴포넌트의 속성으로 헤더를 렌더링하는 방법을 설정하는 속성입니다.
+    1. float: 헤더가 상단에 유지되며 하나의 헤더를 사용
+    2. screen: 각 화면마다 헤더를 가지며 화면 변경과 함께 나타나거나 사라짐
+    3. none: 헤더가 렌더링되지 않음
+
 <br />
