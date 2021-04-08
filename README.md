@@ -318,3 +318,33 @@
     3. none: 헤더가 렌더링되지 않음
 
 <br />
+
+- headerShown은 화면 옵션으로, Navigator 컴포넌트의 screenOptions에 설정하면 전체 화면의 헤더가 보이지 않도록 설정할 수 있습니다.
+- 헤더가 사라지면 노치 디자인 문제로 화면의 일부가 가려지는 문제를 해결하기 위해 SafeAreaView를 사용해야 합니다. (iOS)
+- Android 같은 경우 상태바에 가려지는 문제를 StatusBar를 통해 해결 가능
+
+![6](https://user-images.githubusercontent.com/64779472/113995990-b63c0a00-9891-11eb-984e-dc432361779e.PNG)
+
+```javascript
+    //headerShown
+    <Stack.Screen 
+        name="Home" 
+        component={Home}
+        options={{ headerShown: false }}
+    />
+
+    //SageAreaView
+    const Container = styled.SafeAreaView`
+        flex: 1;
+        justify-content: center;
+        align-items: center;
+    `;
+
+    //StatusBar
+    <StatusBar 
+        barStyle="dark-content"
+        backgroundColor="#ffffff"
+    />
+```
+
+<br />
